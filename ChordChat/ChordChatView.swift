@@ -18,32 +18,40 @@ struct ChordChatView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
 
-            Text("Chord")   
+            Text("Chord")
 
             HStack {
+                // mutating action
                 ButtonComponent(content: "Undo", icon: "arrowshape.turn.up.backward.circle") {
+                    print("Undo")
                     if(historyPointer > 0){
                         isUndoing = true
                         historyPointer -= 1
                         let element = historyStack[historyPointer]
                         text = element
+                        selection = nil
                     }
                 }
                 
+                // mutating action
                 ButtonComponent(content: "Redo", icon: "arrowshape.turn.up.forward.circle") {
+                    print("Redo")
                     if(historyPointer < historyStack.count - 1){
                         isRedoing = true
                         historyPointer+=1
                         let element = historyStack[historyPointer]
                         text = element
+                        selection = nil
                     }
                 }
                 
+                // non mutating action
                 ButtonComponent(content: "Select All", icon: "doc.on.doc") {
                     print("Select All")
                     selection?.indices = .selection(text.startIndex..<text.endIndex)
                 }
                 
+                // non mutating action
                 ButtonComponent(content: "Copy", icon: "clipboard") {
                     print("Copy")
                     guard let selection else {
@@ -54,6 +62,7 @@ struct ChordChatView: View {
                     }
                 }
                 
+                // mutating action
                 ButtonComponent(content: "Paste", icon: "doc.on.clipboard") {
                     print("Paste")
                     guard let selection else {
@@ -68,6 +77,7 @@ struct ChordChatView: View {
                     }
                 }
                 
+                // mutating action
                 ButtonComponent(content: "Cut", icon: "scissors") {
                     print("Cut")
                     guard let selection else {
@@ -80,7 +90,6 @@ struct ChordChatView: View {
                         let newIndex = text.index(range.lowerBound, offsetBy: 0)
                         self.selection?.indices = .selection(newIndex..<newIndex)
                     }
-                    
                 }
                 
                 ButtonComponent(content: "Send", icon: "paperplane") {
@@ -88,7 +97,7 @@ struct ChordChatView: View {
                 }
             }
 
-            TextEditor(text: $text, selection: $selection)
+            SwiftUI.TextEditor(text: $text, selection: $selection)
                 .onChange(of: text) {
                     oldValue, newValue in
                     if isUndoing {
@@ -100,7 +109,6 @@ struct ChordChatView: View {
                         historyStack.append(oldValue)
                         historyPointer += 1
                     }
-
                 }
                 .onAppear{
                     historyStack = [text]

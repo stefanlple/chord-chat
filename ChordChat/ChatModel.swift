@@ -1,3 +1,3 @@
 struct ChatModel {
-//    private(set) 
+    
 }
