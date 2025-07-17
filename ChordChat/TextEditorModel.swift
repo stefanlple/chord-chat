@@ -1,18 +1,27 @@
-import SwiftUI
-
 struct TextEditorModel {
-    var text: String
-    var oldText: String
+    var textEditorState : TextEditorState
+    var chatHistory : ChatHistory = ChatHistory()
     
-    var clipboard: String
-    var selection: Range<Int>
+    init(textEditorState: TextEditorState = TextEditorState()){
+        self.textEditorState = textEditorState
+    }
     
-    var isUndoing = false
-    var isRedoing = false
+    var text : String{
+        get {
+            textEditorState.text
+        }
+        set {
+            textEditorState.text = newValue
+        }
+    }
+    
+    var textSelection: Range<String.Index> {
+        textEditorState.textSelection
+    }
     
     
-    func getText(){
-        
+    public mutating func execute(textCommand : inout TextCommand) {
+        textCommand.execute(on: &self)
+        print(chatHistory.historyStack)
     }
 }
-

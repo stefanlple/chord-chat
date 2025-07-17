@@ -1,4 +1,4 @@
-struct UndoCommand: TextCommand, CustomStringConvertible {
+struct RedoCommand : TextCommand {
     var description: String {
         snapshot?.text ?? "NO VALUE FOUND!"
     }
@@ -6,7 +6,7 @@ struct UndoCommand: TextCommand, CustomStringConvertible {
     var snapshot: TextEditorState?
     
     mutating func execute(on textEditorModel: inout TextEditorModel) {
-        let command = textEditorModel.chatHistory.getPreviousHistory()
+        let command = textEditorModel.chatHistory.getNextHistory()
         if let snapshot = command.snapshot {
             textEditorModel.textEditorState = snapshot
         }
