@@ -30,10 +30,18 @@ struct UpdateTextCommand: TextCommand, CustomStringConvertible {
 
     public mutating func execute(on textEditorModel: inout TextEditorModel) {
         saveSnapshot(of: textEditorModel)
-        print(
-            "state in updatetext", textEditorModel.textEditorState.text.count,
-            textEditorModel.textEditorState)
+        
         textEditorModel.text = newText
-        textEditorModel.chatHistory.pushToHistory(self)
+        do {
+            try textEditorModel.chatHistory.pushToHistory(self)
+        } catch ChatHistoryError.pointerOutOfBound {
+            print("History Pointer out of bounds")
+        }catch {
+            print("Unknown Error")
+        }
+        
+        let currentPointer = textEditorModel.chatHistory.historyPointer
+        _ = textEditorModel.chatHistory.removeHistoryRange(startIndex: currentPointer + 1)
+
     }
 }

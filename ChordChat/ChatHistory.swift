@@ -6,37 +6,42 @@ struct ChatHistory {
     var historyStack = TextCommandArray()
     var historyPointer = 0
 
-    mutating func getNextHistory() -> TextCommand {
-        incrementPointer()
+    mutating func getNextHistory() throws -> TextCommand?  {
+        guard historyPointer < historyStack.count - 1 else {
+            throw ChatHistoryError.pointerOutOfBound
+        }
+        historyPointer += 1
         return historyStack[historyPointer]
     }
 
-    mutating func getPreviousHistory() -> TextCommand {
-        decrementPointer()
-        print("Hisotry Pointer", historyPointer)
+    mutating func getPreviousHistory() throws -> TextCommand {
+        guard historyPointer > 0 else {
+            throw ChatHistoryError.pointerOutOfBound
+        }
+        historyPointer -= 1
         return historyStack[historyPointer]
     }
 
-    mutating func pushToHistory(_ element: TextCommand) {
+    mutating func pushToHistory(_ element: TextCommand) throws {
         historyStack.append(element)
-        incrementPointer()
+        try incrementPointer()
     }
 
     mutating func removeHistoryRange(startIndex: Int, endIndex: Int? = nil) -> TextCommandArray {
-        historyStack.removeSubrange(startIndex..<(endIndex ?? historyStack.count - 1))
+        historyStack.removeSubrange(startIndex..<(endIndex ?? historyStack.count))
         return historyStack
     }
 
-    private mutating func incrementPointer() {
+    private mutating func incrementPointer() throws {
         guard historyPointer < historyStack.count - 1 else {
-            return
+            throw ChatHistoryError.pointerOutOfBound
         }
         historyPointer += 1
     }
 
-    private mutating func decrementPointer() {
+    private mutating func decrementPointer() throws {
         guard historyPointer > 0 else {
-            return
+            throw ChatHistoryError.pointerOutOfBound
         }
         historyPointer -= 1
     }

@@ -10,7 +10,6 @@ struct ChatModel {
     }
 
     public var textSelection: Range<String.Index> {
-        //        textEditor.textSelection
         textEditor.textEditorState.textSelection
     }
 
@@ -31,7 +30,6 @@ struct ChatModel {
     }
 
     public mutating func redo() {
-        print("reeee")
         var redoCommand: any TextCommand = RedoCommand()
         textEditor.execute(textCommand: &redoCommand)
     }
