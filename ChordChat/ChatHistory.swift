@@ -2,7 +2,7 @@ import Foundation
 
 struct ChatHistory {
     typealias TextCommandArray = [TextCommand]
-    
+
     var historyStack = TextCommandArray()
     var historyPointer = 0
 
@@ -17,12 +17,12 @@ struct ChatHistory {
         return historyStack[historyPointer]
     }
 
-    mutating func pushToHistory(_ element: TextCommand){
+    mutating func pushToHistory(_ element: TextCommand) {
         historyStack.append(element)
         incrementPointer()
     }
 
-    mutating func removeHistoryRange(startIndex: Int, endIndex: Int? = nil) -> TextCommandArray  {
+    mutating func removeHistoryRange(startIndex: Int, endIndex: Int? = nil) -> TextCommandArray {
         historyStack.removeSubrange(startIndex..<(endIndex ?? historyStack.count - 1))
         return historyStack
     }
@@ -35,7 +35,7 @@ struct ChatHistory {
     }
 
     private mutating func decrementPointer() {
-        guard historyPointer > 0 else{
+        guard historyPointer > 0 else {
             return
         }
         historyPointer -= 1

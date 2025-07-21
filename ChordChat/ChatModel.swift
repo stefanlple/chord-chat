@@ -1,20 +1,27 @@
 struct ChatModel {
-    var textEditor : TextEditorModel
-    
+    var textEditor: TextEditorModel
+
     init() {
         self.textEditor = TextEditorModel()
     }
-    
-    public var text : String {
+
+    public var text: String {
         textEditor.text
     }
-    
-    public var selection : Range<String.Index> {
-        textEditor.textSelection
+
+    public var textSelection: Range<String.Index> {
+        //        textEditor.textSelection
+        textEditor.textEditorState.textSelection
     }
-    
-    public mutating func updateText(oldText : String, newText: String) {
-        var updateCommand: any TextCommand = UpdateTextCommand(oldText: oldText, newText: newText)
+
+    public mutating func updateText(
+        newText: String,
+        textSelection: Range<String.Index>
+    ) {
+        var updateCommand: any TextCommand = UpdateTextCommand(
+            newText: newText,
+            textSelection: textSelection
+        )
         textEditor.execute(textCommand: &updateCommand)
     }
 
@@ -22,10 +29,10 @@ struct ChatModel {
         var undoCommand: any TextCommand = UndoCommand()
         textEditor.execute(textCommand: &undoCommand)
     }
-    
-    public mutating func redo(){
+
+    public mutating func redo() {
         print("reeee")
-        var redoCommand : any TextCommand = RedoCommand()
+        var redoCommand: any TextCommand = RedoCommand()
         textEditor.execute(textCommand: &redoCommand)
     }
 }

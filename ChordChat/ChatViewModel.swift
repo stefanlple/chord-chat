@@ -2,16 +2,33 @@ import SwiftUI
 
 class ChatViewModel: ObservableObject {
     @Published private var model: ChatModel
-    
-    var text : String {
+    var textCounter = 0
+    var selectionCounter = 1
+
+    var text: String {
         get {
-            model.text
+            self.model.text
         }
         set {
-            model.updateText(oldText: text, newText: newValue)
+            let range = self.model.text
+            self.model.updateText(newText: newValue, textSelection: range.endIndex..<range.endIndex)
         }
     }
-    
+
+    var selection: TextSelection? {
+        get {
+            let range = self.model.textSelection
+            return TextSelection(range: range)
+        }
+        set {
+            guard let selection = newValue else { return }
+
+            if case let .selection(range) = selection.indices {
+                self.model.textEditor.textSelection = range
+            }
+        }
+    }
+
     init() {
         self.model = ChatModel()
     }

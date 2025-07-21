@@ -104,6 +104,7 @@ struct Backup: View {
             SwiftUI.TextEditor(text: $text, selection: $selection)
                 .onChange(of: text) {
                     oldValue, newValue in
+                    print(historyStack)
                     if isUndoing {
                         isUndoing = false
                     } else if isRedoing {

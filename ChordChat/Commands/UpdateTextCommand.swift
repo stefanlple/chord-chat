@@ -1,18 +1,38 @@
 struct UpdateTextCommand: TextCommand, CustomStringConvertible {
-    var description: String {
-        snapshot?.text ?? "NO TEXT FOUND!"
-    }
-    
-    var snapshot: TextEditorState?
-    
     private var newText: String
-    
-    init(oldText: String, newText: String) {
-        self.newText = newText
+
+    // PreviousTextSelection to restore the old state of the snapshot. It is being passed by the by the View and retried directly from the model at that state
+    private var previousTextSelection: Range<String.Index>
+
+    var snapshot: TextEditorState?
+
+    var description: String {
+        guard let lowerBound = snapshot?.textSelection.lowerBound,
+            let upperBound = snapshot?.textSelection.upperBound,
+            let text = snapshot?.text
+        else {
+            return "ERROR"
+        }
+        return
+            "UPDATE_TEXT ->  \(text) | Last Index: \(text.indices.count - 1) | Range: \(lowerBound)..<\(upperBound)"
     }
-    
-    public mutating func execute(on textEditorModel: inout TextEditorModel){
+
+    init(newText: String, textSelection: Range<String.Index>) {
+        self.newText = newText
+        self.previousTextSelection = textSelection
+    }
+
+    // override
+    public mutating func saveSnapshot(of textEditorModel: TextEditorModel) {
+        snapshot = TextEditorState(text: textEditorModel.text, textSelection: previousTextSelection)
+
+    }
+
+    public mutating func execute(on textEditorModel: inout TextEditorModel) {
         saveSnapshot(of: textEditorModel)
+        print(
+            "state in updatetext", textEditorModel.textEditorState.text.count,
+            textEditorModel.textEditorState)
         textEditorModel.text = newText
         textEditorModel.chatHistory.pushToHistory(self)
     }
