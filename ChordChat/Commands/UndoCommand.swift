@@ -1,9 +1,9 @@
 struct UndoCommand: TextCommand, CustomStringConvertible {
+    var snapshot: TextEditorState?
+    
     var description: String {
         "UNDO " + (snapshot?.text ?? "NO VALUE FOUND!")
     }
-
-    var snapshot: TextEditorState?
 
     mutating func execute(on textEditorModel: inout TextEditorModel) {
         do {

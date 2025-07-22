@@ -27,21 +27,25 @@ struct ChordChatView: View {
                 // non mutating action
                 ButtonComponent(content: "Select All", icon: "doc.on.doc") {
                     print("Select All")
+                    viewModel.selectAll()
                 }
 
                 // non mutating action
                 ButtonComponent(content: "Copy", icon: "clipboard") {
                     print("Copy")
+                    viewModel.copy()
                 }
 
                 // mutating action
                 ButtonComponent(content: "Paste", icon: "doc.on.clipboard") {
                     print("Paste")
+                    viewModel.paste()
                 }
 
                 // mutating action
                 ButtonComponent(content: "Cut", icon: "scissors") {
                     print("Cut")
+                    viewModel.cut()
                 }
             }
 

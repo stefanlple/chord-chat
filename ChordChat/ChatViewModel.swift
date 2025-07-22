@@ -7,30 +7,30 @@ class ChatViewModel: ObservableObject {
 
     var text: String {
         get {
-            self.model.text
+            model.text
         }
         set {
-            let range = self.model.text
-            self.model.updateText(newText: newValue, textSelection: range.endIndex..<range.endIndex)
+            let range = model.text
+            model.updateText(newText: newValue, textSelection: range.endIndex..<range.endIndex)
         }
     }
 
     var selection: TextSelection? {
         get {
-            let range = self.model.textSelection
+            let range = model.textSelection
             return TextSelection(range: range)
         }
         set {
             guard let selection = newValue else { return }
 
             if case let .selection(range) = selection.indices {
-                self.model.textEditor.textSelection = range
+                model.textEditor.textSelection = range
             }
         }
     }
 
     init() {
-        self.model = ChatModel()
+        model = ChatModel()
     }
 
     func undo() {
@@ -40,12 +40,22 @@ class ChatViewModel: ObservableObject {
     func redo() {
         model.redo()
     }
+    
+    func selectAll(){
+        model.selectAll()
+    }
 
-    func cut() {}
-
-    func copy() {}
-
-    func paste() {}
+    func copy() {
+        model.copy()
+    }
+    
+    func paste() {
+        model.paste()
+    }
+    
+    func cut() {
+        model.cut()
+    }
 
     func send() {}
 

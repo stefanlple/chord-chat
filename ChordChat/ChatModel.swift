@@ -33,4 +33,24 @@ struct ChatModel {
         var redoCommand: any TextCommand = RedoCommand()
         textEditor.execute(textCommand: &redoCommand)
     }
+    
+    public mutating func selectAll() {
+        var selectAllCommand : any TextCommand = SelectAllCommand()
+        textEditor.execute(textCommand: &selectAllCommand)
+    }
+    
+    public mutating func copy() {
+        var copyCommand : any TextCommand = CopyCommand()
+        textEditor.execute(textCommand: &copyCommand)
+    }
+    
+    public mutating func paste() {
+        var pasteCommand : any TextCommand = PasteCommand()
+        textEditor.execute(textCommand: &pasteCommand)
+    }
+    
+    public mutating func cut() {
+        var cutCommand : any TextCommand = CutCommand()
+        textEditor.execute(textCommand: &cutCommand)
+    }
 }

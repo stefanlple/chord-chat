@@ -1,7 +1,7 @@
 struct UpdateTextCommand: TextCommand, CustomStringConvertible {
     private var newText: String
 
-    // PreviousTextSelection to restore the old state of the snapshot. It is being passed by the by the View and retried directly from the model at that state
+    // PreviousTextSelection to restore the old state of the snapshot. It is being passed by the View and retrieved directly from the model at that state
     private var previousTextSelection: Range<String.Index>
 
     var snapshot: TextEditorState?
@@ -22,7 +22,7 @@ struct UpdateTextCommand: TextCommand, CustomStringConvertible {
         self.previousTextSelection = textSelection
     }
 
-    // override
+    // override default implementation
     public mutating func saveSnapshot(of textEditorModel: TextEditorModel) {
         snapshot = TextEditorState(text: textEditorModel.text, textSelection: previousTextSelection)
 
@@ -36,7 +36,7 @@ struct UpdateTextCommand: TextCommand, CustomStringConvertible {
             try textEditorModel.chatHistory.pushToHistory(self)
         } catch ChatHistoryError.pointerOutOfBound {
             print("History Pointer out of bounds")
-        }catch {
+        } catch {
             print("Unknown Error")
         }
         
