@@ -30,7 +30,7 @@ class ChatViewModel: ObservableObject {
     }
 
     init() {
-        model = ChatModel()
+        model = ChatModel(webSocketUrl: "ws://localhost:8080")
     }
 
     func undo() {

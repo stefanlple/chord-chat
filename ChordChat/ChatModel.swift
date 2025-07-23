@@ -1,8 +1,13 @@
 struct ChatModel {
     var textEditor: TextEditorModel
-
-    init() {
-        self.textEditor = TextEditorModel()
+    let webSocketManager: WebSocketManager
+    let webSocketUrl: String
+    
+    init(webSocketUrl: String) {
+        textEditor = TextEditorModel()
+        webSocketManager = WebSocketManager.singleton
+        self.webSocketUrl = webSocketUrl
+        webSocketManager.connect(to: webSocketUrl)
     }
 
     public var text: String {
@@ -52,5 +57,8 @@ struct ChatModel {
     public mutating func cut() {
         var cutCommand : any TextCommand = CutCommand()
         textEditor.execute(textCommand: &cutCommand)
+    }
+    
+    public mutating func send() {
     }
 }
