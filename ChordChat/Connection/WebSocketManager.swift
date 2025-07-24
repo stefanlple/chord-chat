@@ -3,7 +3,8 @@ import Foundation
 final class WebSocketManager {
     static let singleton = WebSocketManager()
     private var webSocketTask: URLSessionWebSocketTask?
-//    private var messagesHandler = [String:]
+    private var messagesHandlers : [String: WebSocketHandler] = [:]
+    private var listeners = Set<AnyHashable>()
     
     func connect(to urlString: String){
         guard let url = URL(string: urlString) else {
@@ -62,11 +63,20 @@ final class WebSocketManager {
             // TODO: To be implemeted
             print("ERROR: Receive data - Ehh kann ich nicht handlen")
         case .string(let string):
-            let message = SerializeUtil.deserialize(jsonString: string, type: Message.self)
-            print(message ?? "popo")
+            guard let message = SerializeUtil.deserialize(jsonString: string, type: Message.self) else { return }
+            messagesHandlers[message.messageType.rawValue]?.handle(message: message)
         @unknown default:
             print("ERROR: Unknown Error")
         }
         self.receive()
+    }
+    
+    func registerListener(listener: any WebSocketListener) {
+        _ = listeners.insert(listener)
+    }
+    
+    func registerHandlers(messageType: MessageType, handler: WebSocketHandler) {
+        messagesHandlers[messageType.rawValue] = handler
+//        _ = listeners.insert(listener)
     }
 }
