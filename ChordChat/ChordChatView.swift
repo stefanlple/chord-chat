@@ -51,6 +51,7 @@ struct ChordChatView: View {
 
             ButtonComponent(content: "Send", icon: "paperplane") {
                 print("Send")
+                viewModel.send()
             }
 
             SwiftUI.TextEditor(text: $viewModel.text, selection: $viewModel.selection)

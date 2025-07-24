@@ -12,9 +12,9 @@ struct RedoCommand: TextCommand {
                 textEditorModel.textEditorState = snapshot
             }
         } catch ChatHistoryError.pointerOutOfBound {
-            print("History Pointer out of bounds")
+            print("ERROR: History Pointer out of bounds")
         } catch {
-            print("Unknown Error")
+            print("ERROR: Unknown Error")
         }
     }
 }

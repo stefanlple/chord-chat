@@ -7,9 +7,9 @@ struct PasteCommand : TextCommand {
         do {
             try textEditorModel.chatHistory.pushToHistory(self)
         } catch ChatHistoryError.pointerOutOfBound {
-            print("History Pointer out of bounds")
+            print("ERROR: History Pointer out of bounds")
         }catch {
-            print("Unknown Error")
+            print("ERROR: Unknown Error")
         }
         
         // steps delete current selection. take the first start index and then insert text at that position

@@ -32,6 +32,11 @@ struct ChatHistory {
         return historyStack
     }
 
+    mutating func clearHistory() {
+        historyStack.removeAll()
+        historyPointer = 0
+    }
+    
     private mutating func incrementPointer() throws {
         guard historyPointer < historyStack.count - 1 else {
             throw ChatHistoryError.pointerOutOfBound
