@@ -4,7 +4,7 @@ final class WebSocketManager {
     static let singleton = WebSocketManager()
     private var webSocketTask: URLSessionWebSocketTask?
     private var messagesHandlers : [String: WebSocketHandler] = [:]
-    private var listeners = Set<AnyHashable>()
+    @Published var messages = [Message]()
     
     func connect(to urlString: String){
         guard let url = URL(string: urlString) else {
@@ -25,6 +25,12 @@ final class WebSocketManager {
         }
     }
     
+    private var chatModel: ChatModel?
+        
+    func setChatModel(_ model: ChatModel) {
+            self.chatModel = model
+    }
+        
     func send(message: Message) async {
         guard let webSocketTask = webSocketTask else {
             print("ERROR: WebSocket is not connected")
@@ -59,24 +65,27 @@ final class WebSocketManager {
     
     func handleReceivedMessage(message: URLSessionWebSocketTask.Message){
         switch message {
-        case .data(_):
-            // TODO: To be implemeted
-            print("ERROR: Receive data - Ehh kann ich nicht handlen")
         case .string(let string):
             guard let message = SerializeUtil.deserialize(jsonString: string, type: Message.self) else { return }
-            messagesHandlers[message.messageType.rawValue]?.handle(message: message)
+//            messagesHandlers[message.messageType.rawValue]?.handle(message: message)
+            DispatchQueue.main.async {
+                self.messages.append(message)
+                print(self.messages)
+            }
+        case .data(_):
+            // TODO: To be implemented
+            print("ERROR: Receive data - Ehh kann ich nicht handlen")
         @unknown default:
             print("ERROR: Unknown Error")
         }
         self.receive()
     }
     
-    func registerListener(listener: any WebSocketListener) {
-        _ = listeners.insert(listener)
-    }
     
     func registerHandlers(messageType: MessageType, handler: WebSocketHandler) {
         messagesHandlers[messageType.rawValue] = handler
-//        _ = listeners.insert(listener)
     }
+    
+    
+
 }

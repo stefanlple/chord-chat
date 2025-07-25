@@ -3,23 +3,24 @@ struct ChatModel : WebSocketListener {
     let webSocketManager: WebSocketManager
     let webSocketUrl: String
     let senderName: String
-    var messageFactory: MessageFactory
+    let messageFactory: MessageFactory
     
     init(webSocketUrl: String, senderName: String = "Default Name") {
         textEditor = TextEditorModel()
         webSocketManager = WebSocketManager.singleton
-        self.webSocketUrl = webSocketUrl
         webSocketManager.connect(to: webSocketUrl)
+        self.webSocketUrl = webSocketUrl
         self.senderName = senderName
-        
         messageFactory = MessageFactory(senderInfo: senderName)
-        
-        webSocketManager.registerListener(listener: self)
-        webSocketManager.registerHandlers(messageType: MessageType.message, handler: MessageHandler())
+//        webSocketManager.setChatModel(self)
     }
 
     public var text: String {
         textEditor.text
+    }
+    
+    public var messages: [Message] {
+        webSocketManager.messages
     }
 
     public var textSelection: Range<String.Index> {
@@ -72,8 +73,10 @@ struct ChatModel : WebSocketListener {
         textEditor.execute(textCommand: &sendCommand)
     }
     
-    public func update(with: Message) {
-        
+    public mutating func update(with message: Message) {
+//        messages.append(message)
+        print(messages)
+        print(messages.count)
     }
     
     func hash(into hasher: inout Hasher) {

@@ -2,18 +2,6 @@ import SwiftUI
 
 struct ChordChatView: View {
     @ObservedObject var viewModel = ChatViewModel()
-    @State private var messages: [Message] = [
-        Message(messageType: MessageType.message, senderName: "Michael B", timeStamp: TimeStampUtil.getDateNowMiliseconds(), message: "hallo"),
-            Message(messageType: MessageType.message, senderName: "TaylorSwifty", timeStamp: "1753442054.317661", message: "hallo1"),
-            Message(messageType: MessageType.message, senderName: "TaylorSwifty", timeStamp: "1753442054.317661", message: "hallo2"),
-            Message(messageType: MessageType.message, senderName: "TaylorSwifty", timeStamp: "1753442054.317661", message: "hallo3"),
-            Message(messageType: MessageType.message, senderName: "TaylorSwifty", timeStamp: "1753442054.317661", message: "hallo4"),
-            Message(messageType: MessageType.message, senderName: "TaylorSwifty", timeStamp: "1753442054.317661", message: "hallo5"),
-            Message(messageType: MessageType.message, senderName: "TaylorSwifty", timeStamp: "1753442054.317661", message: "hall6"),
-            Message(messageType: MessageType.message, senderName: "TaylorSwifty", timeStamp: "1753442054.317661", message: "hallo7"),
-            Message(messageType: MessageType.message, senderName: "TaylorSwifty", timeStamp: "1753442054.317661", message: "hallo8"),
-            Message(messageType: MessageType.message, senderName: "TaylorSwifty", timeStamp: "1753442054.317661", message: "hallo9")
-        ]
     
     var body: some View {
         VStack {
@@ -23,11 +11,11 @@ struct ChordChatView: View {
             Text("Chord")
             ScrollViewReader { proxy in
                 List{
-                    ForEach(messages){ message in
+                    ForEach(viewModel.messages){ message in
                         MessageView(senderName: message.senderName, timeStamp: message.timeStamp, message: message.message, currentSenderName: viewModel.currentSenderName).id(message.id)
                     }
-                }.onChange(of: messages.count) { _, _ in
-                    if let lastID = messages.last?.id {
+                }.onChange(of: viewModel.messages.count) { _, _ in
+                    if let lastID = viewModel.messages.last?.id {
                         withAnimation{
                             proxy.scrollTo(lastID, anchor: .bottom)
                         }
@@ -75,11 +63,13 @@ struct ChordChatView: View {
 
             ButtonComponent(content: "Send", icon: "paperplane") {
                 print("Send")
-                /*messages.insert(Message(messageType: MessageType.message, senderName: "TaylorSwifty", timeStamp: "12342.317661", message: "hallo"), at: messages.count)*/
-//                viewModel.send()
+                guard viewModel.text.count != 0 else {
+                    return
+                }
+                viewModel.send()
             }
 
-            SwiftUI.TextEditor(text: $viewModel.text, selection: $viewModel.selection)
+            SwiftUI.TextEditor(text: $viewModel.text, selection: $viewModel.selection).frame(height: 15)
         }.padding()
     }
 }
@@ -96,7 +86,7 @@ struct MessageView : View {
         let paddedPrefix = senderName.padding(toLength: 10, withPad: " ", startingAt: 0)
         
         guard let timeStampDate = TimeStampUtil.convertTimestampIntoDate(timestamp: timeStamp) else {
-            return Text("Invalid message")
+            return Text("Invalid message - incorrect TimeStamp")
         }
         
         let senderNameView = Text(paddedPrefix).bold().foregroundStyle(currentSenderName == senderName ? .red : .white)

@@ -1,3 +1,3 @@
 protocol WebSocketListener : Hashable {
-    func update(with: Message)
+    mutating func update(with: Message)
 }

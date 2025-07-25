@@ -1,10 +1,17 @@
 import SwiftUI
+import Foundation
+import Combine
 
 class ChatViewModel: ObservableObject {
-    @Published private var model: ChatModel
+    @Published var model: ChatModel
     var textCounter = 0
     var selectionCounter = 1
+    private var cancellables = Set<AnyCancellable>()
 
+    var messages : [Message]{
+        model.messages
+    }
+    
     var text: String {
         get {
             model.text
@@ -28,12 +35,18 @@ class ChatViewModel: ObservableObject {
             }
         }
     }
+    
     var currentSenderName: String {
         model.senderName
     }
 
     init() {
         model = ChatModel(webSocketUrl: "ws://127.0.0.1:8080", senderName: "TaylorSwifty")
+        model.webSocketManager.$messages
+                    .sink { [weak self] _ in
+                        self?.objectWillChange.send()
+                    }
+                    .store(in: &cancellables)
     }
 
     func undo() {
