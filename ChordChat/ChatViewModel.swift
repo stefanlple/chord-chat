@@ -28,6 +28,9 @@ class ChatViewModel: ObservableObject {
             }
         }
     }
+    var currentSenderName: String {
+        model.senderName
+    }
 
     init() {
         model = ChatModel(webSocketUrl: "ws://127.0.0.1:8080", senderName: "TaylorSwifty")
