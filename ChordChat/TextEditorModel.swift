@@ -27,6 +27,6 @@ struct TextEditorModel {
 
     public mutating func execute(textCommand: inout TextCommand) {
         textCommand.execute(on: &self)
-//        print("Stack:", chatHistory.historyStack)
+        //        print("Stack:", chatHistory.historyStack)
     }
 }

@@ -6,7 +6,7 @@ struct ChatHistory {
     var historyStack = TextCommandArray()
     var historyPointer = 0
 
-    mutating func getNextHistory() throws -> TextCommand?  {
+    mutating func getNextHistory() throws -> TextCommand? {
         guard historyPointer < historyStack.count - 1 else {
             throw ChatHistoryError.pointerOutOfBound
         }
@@ -36,7 +36,7 @@ struct ChatHistory {
         historyStack.removeAll()
         historyPointer = 0
     }
-    
+
     private mutating func incrementPointer() throws {
         guard historyPointer < historyStack.count - 1 else {
             throw ChatHistoryError.pointerOutOfBound

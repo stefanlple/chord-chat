@@ -1,6 +1,6 @@
-import SwiftUI
-import Foundation
 import Combine
+import Foundation
+import SwiftUI
 
 class ChatViewModel: ObservableObject {
     @Published var model: ChatModel
@@ -8,10 +8,10 @@ class ChatViewModel: ObservableObject {
     var selectionCounter = 1
     private var cancellables = Set<AnyCancellable>()
 
-    var messages : [Message]{
+    var messages: [Message] {
         model.messages
     }
-    
+
     var text: String {
         get {
             model.text
@@ -35,7 +35,7 @@ class ChatViewModel: ObservableObject {
             }
         }
     }
-    
+
     var currentSenderName: String {
         model.senderName
     }
@@ -43,10 +43,10 @@ class ChatViewModel: ObservableObject {
     init() {
         model = ChatModel(webSocketUrl: "ws://127.0.0.1:8080", senderName: "TaylorSwifty")
         model.webSocketManager.$messages
-                    .sink { [weak self] _ in
-                        self?.objectWillChange.send()
-                    }
-                    .store(in: &cancellables)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
     }
 
     func undo() {
@@ -56,19 +56,19 @@ class ChatViewModel: ObservableObject {
     func redo() {
         model.redo()
     }
-    
-    func selectAll(){
+
+    func selectAll() {
         model.selectAll()
     }
 
     func copy() {
         model.copy()
     }
-    
+
     func paste() {
         model.paste()
     }
-    
+
     func cut() {
         model.cut()
     }

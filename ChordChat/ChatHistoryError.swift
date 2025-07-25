@@ -1,3 +1,3 @@
-enum ChatHistoryError : Error {
+enum ChatHistoryError: Error {
     case pointerOutOfBound
 }

@@ -30,7 +30,7 @@ struct UpdateTextCommand: TextCommand, CustomStringConvertible {
 
     public mutating func execute(on textEditorModel: inout TextEditorModel) {
         saveSnapshot(of: textEditorModel)
-        
+
         textEditorModel.text = newText
         do {
             try textEditorModel.chatHistory.pushToHistory(self)
@@ -39,7 +39,7 @@ struct UpdateTextCommand: TextCommand, CustomStringConvertible {
         } catch {
             print("ERROR: Unknown Error")
         }
-        
+
         let currentPointer = textEditorModel.chatHistory.historyPointer
         _ = textEditorModel.chatHistory.removeHistoryRange(startIndex: currentPointer + 1)
 

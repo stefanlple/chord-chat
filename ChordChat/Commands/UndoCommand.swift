@@ -1,6 +1,6 @@
 struct UndoCommand: TextCommand, CustomStringConvertible {
     var snapshot: TextEditorState?
-    
+
     var description: String {
         "UNDO " + (snapshot?.text ?? "NO VALUE FOUND!")
     }

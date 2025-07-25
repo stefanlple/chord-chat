@@ -6,7 +6,7 @@ struct TimeStampUtil {
         let stringifiedDateNowMiliseconds = String(dateNowMiliseconds)
         return stringifiedDateNowMiliseconds
     }
-    
+
     static func convertTimestampIntoDate(timestamp: String) -> Date? {
         guard let timeStamp = Double(timestamp) else {
             return nil
@@ -17,11 +17,13 @@ struct TimeStampUtil {
 }
 
 extension Date {
-    func localizedDescription(date dateStyle: DateFormatter.Style = .medium,
-                              time timeStyle: DateFormatter.Style = .medium,
-                              in timeZone: TimeZone = .current,
-                              locale: Locale = .current,
-                              using calendar: Calendar = .current) -> String {
+    func localizedDescription(
+        date dateStyle: DateFormatter.Style = .medium,
+        time timeStyle: DateFormatter.Style = .medium,
+        in timeZone: TimeZone = .current,
+        locale: Locale = .current,
+        using calendar: Calendar = .current
+    ) -> String {
         Formatter.date.calendar = calendar
         Formatter.date.locale = locale
         Formatter.date.timeZone = timeZone

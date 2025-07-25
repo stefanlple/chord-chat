@@ -3,10 +3,10 @@ import Foundation
 final class WebSocketManager {
     static let singleton = WebSocketManager()
     private var webSocketTask: URLSessionWebSocketTask?
-    private var messagesHandlers : [String: WebSocketHandler] = [:]
+    private var messagesHandlers: [String: WebSocketHandler] = [:]
     @Published var messages = [Message]()
-    
-    func connect(to urlString: String){
+
+    func connect(to urlString: String) {
         guard let url = URL(string: urlString) else {
             print("ERROR: Invalid URL")
             return
@@ -14,7 +14,7 @@ final class WebSocketManager {
         let session = URLSession(configuration: .default)
         webSocketTask = session.webSocketTask(with: url)
         webSocketTask?.resume()
-        
+
         webSocketTask?.sendPing { error in
             if let error = error {
                 print("ERROR: Failed to connect – \(error.localizedDescription)")
@@ -24,19 +24,19 @@ final class WebSocketManager {
             }
         }
     }
-    
+
     private var chatModel: ChatModel?
-        
+
     func setChatModel(_ model: ChatModel) {
-            self.chatModel = model
+        self.chatModel = model
     }
-        
+
     func send(message: Message) async {
         guard let webSocketTask = webSocketTask else {
             print("ERROR: WebSocket is not connected")
             return
         }
-        
+
         guard let serialisedMessage = SerializeUtil.serialize(object: message) else { return }
         let wsMessage: URLSessionWebSocketTask.Message
         wsMessage = URLSessionWebSocketTask.Message.string(serialisedMessage)
@@ -46,13 +46,13 @@ final class WebSocketManager {
             print("ERROR: Failed sending message – \(error.localizedDescription)")
         }
     }
-    
-    func receive()  {
+
+    func receive() {
         guard let webSocketTask = webSocketTask else {
             print("ERROR: WebSocket is not connected")
             return
         }
-        webSocketTask.receive{ [weak self] result in
+        webSocketTask.receive { [weak self] result in
             switch result {
             case .success(let message):
                 print("successfully received message")
@@ -62,12 +62,13 @@ final class WebSocketManager {
             }
         }
     }
-    
-    func handleReceivedMessage(message: URLSessionWebSocketTask.Message){
+
+    func handleReceivedMessage(message: URLSessionWebSocketTask.Message) {
         switch message {
         case .string(let string):
-            guard let message = SerializeUtil.deserialize(jsonString: string, type: Message.self) else { return }
-//            messagesHandlers[message.messageType.rawValue]?.handle(message: message)
+            guard let message = SerializeUtil.deserialize(jsonString: string, type: Message.self)
+            else { return }
+            //            messagesHandlers[message.messageType.rawValue]?.handle(message: message)
             DispatchQueue.main.async {
                 self.messages.append(message)
                 print(self.messages)
@@ -80,12 +81,9 @@ final class WebSocketManager {
         }
         self.receive()
     }
-    
-    
+
     func registerHandlers(messageType: MessageType, handler: WebSocketHandler) {
         messagesHandlers[messageType.rawValue] = handler
     }
-    
-    
 
 }

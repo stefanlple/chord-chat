@@ -1,10 +1,10 @@
 import Foundation
 
-struct SendCommand : TextCommand {
+struct SendCommand: TextCommand {
     var snapshot: TextEditorState?
     let senderName: String
     let messageFactory: MessageFactory
-    
+
     mutating func execute(on textEditorModel: inout TextEditorModel) {
         let message = messageFactory.createMessage(message: textEditorModel.text)
         Task {
@@ -12,10 +12,11 @@ struct SendCommand : TextCommand {
         }
         cleanup(of: &textEditorModel)
     }
-    
-    func cleanup(of textEditorModel: inout TextEditorModel){
+
+    func cleanup(of textEditorModel: inout TextEditorModel) {
         textEditorModel.chatHistory.clearHistory()
         textEditorModel.text = ""
-        textEditorModel.textSelection = textEditorModel.text.startIndex..<textEditorModel.text.startIndex
+        textEditorModel.textSelection =
+            textEditorModel.text.startIndex..<textEditorModel.text.startIndex
     }
 }
